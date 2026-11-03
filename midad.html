@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>مِداد | استوديو الشهادات المدرسية</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Reem+Kufi:wght@400;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap">
+<style>
+:root{--bg:#f6f1e5;--sf:#fffdf8;--ink:#14213d;--mut:#6b6a63;--br:#a87c32;--ln:#e3dac4;--ac:#2f5d50;--hd:rgba(246,241,229,.94);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1a2e;--sf:#16253f;--ink:#f1ead8;--mut:#a9b0bd;--br:#d4a85a;--ln:#26385a;--ac:#6fb39f;--hd:rgba(15,26,46,.94);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0f1a2e;--sf:#16253f;--ink:#f1ead8;--mut:#a9b0bd;--br:#d4a85a;--ln:#26385a;--ac:#6fb39f;--hd:rgba(15,26,46,.94);color-scheme:dark}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 15px/1.7 "IBM Plex Sans Arabic",system-ui,sans-serif}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--hd);z-index:10}
+h1,h2,h3{font-family:Amiri,"Traditional Arabic",serif;margin:0;line-height:1.3}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:var(--hd);backdrop-filter:blur(8px);border-bottom:1px solid var(--ln)}
+.bar{display:flex;align-items:center;gap:10px;padding:10px 16px;max-width:1200px;margin:auto}
+.brand{font:700 26px Amiri,serif;color:var(--br);margin-inline-end:auto}
+select,input,textarea,button{font:inherit;color:inherit}
+select,input,textarea{width:100%;padding:9px 11px;border:1px solid var(--ln);border-radius:8px;background:var(--sf)}
+input[type=color]{padding:2px;height:40px}
+textarea{resize:vertical;min-height:84px}
+.bar select{width:auto;max-width:44vw}
+button{cursor:pointer;border:1px solid var(--ln);background:var(--sf);border-radius:8px;padding:8px 14px}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+.pri{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.dng{color:#b3392f}
+.tabs{display:flex;gap:4px;padding:0 16px;max-width:1200px;margin:auto;overflow-x:auto}
+.tabs button{border:0;border-bottom:3px solid transparent;border-radius:0;background:none;padding:8px 14px;color:var(--mut);white-space:nowrap}
+.tabs button.on{color:var(--ink);border-color:var(--br);font-weight:600}
+main{max-width:1200px;margin:auto;padding:18px 16px 40px}
+.grid{display:grid;gap:18px}
+@media(min-width:900px){.grid.two{grid-template-columns:380px 1fr;align-items:start}.grid.two .stick{position:sticky;top:120px}}
+.panel{background:var(--sf);border:1px solid var(--ln);border-radius:12px;padding:16px}
+.panel h3{font-size:21px;margin-bottom:8px}
+label{display:block;margin:12px 0 4px;color:var(--mut);font-size:13px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.tpls{display:flex;gap:6px;margin-top:8px}
+.tpls button{flex:1}.tpls button.on{border-color:var(--br);box-shadow:inset 0 0 0 1px var(--br)}
+#pv svg{display:block;width:100%;height:auto;border-radius:6px;box-shadow:0 2px 18px rgba(20,33,61,.18)}
+.list{list-style:none;margin:0;padding:0}
+.list li{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--ln)}
+.list li span{flex:1;min-width:0}.list small{display:block;color:var(--mut)}
+.empty{color:var(--mut);padding:24px 0;text-align:center}
+.toast{position:fixed;inset-inline:16px;bottom:calc(20px + env(safe-area-inset-bottom,0px));margin:auto;max-width:360px;background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:8px;text-align:center;opacity:0;pointer-events:none;transition:opacity .2s;z-index:20}
+.toast.show{opacity:1}
+#pa{display:none}
+@media print{@page{size:A4 landscape;margin:0}:root{padding:0}body::before{display:none}body.pr .app{display:none}body.pr #pa{display:block}.pg{height:100vh;page-break-after:always}.pg svg{width:100%;height:100%}}
+@media(prefers-reduced-motion:reduce){.toast{transition:none}}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+  <div class="bar"><div class="brand">مِداد</div><select id="ss" aria-label="المدرسة الحالية"></select><button id="th" aria-label="تبديل المظهر">◐</button></div>
+  <nav class="tabs" id="tabs"></nav>
+</header>
+<main id="v"></main>
+</div>
+<div id="pa"></div>
+<div class="toast" id="t"></div>
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const K='midad_v2';
+let db=null;try{db=JSON.parse(localStorage.getItem(K))}catch(e){}
+db=db||{schools:[],students:[],certs:[],active:null,theme:null};
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const save=()=>{try{localStorage.setItem(K,JSON.stringify(db))}catch(e){toast('تعذر الحفظ: مساحة المتصفح ممتلئة. نزّل نسخة احتياطية.')}};
+let tt;const toast=m=>{const e=$('#t');e.textContent=m;e.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>e.classList.remove('show'),2600)};
+const sch=()=>db.schools.find(s=>s.id===db.active)||db.schools[0];
+const today=()=>new Date().toISOString().slice(0,10);
+const fd=d=>d?new Intl.DateTimeFormat('ar',{year:'numeric',month:'long',day:'numeric'}).format(new Date(d+'T12:00:00')):'';
+const types=['شهادة تفوق','شهادة تميز','شهادة تقدير','شهادة حفظ القرآن الكريم','شهادة مشاركة','شهادة انضباط','شهادة إنجاز','شهادة شكر','طالب الشهر','نجم الأسبوع','شهادة تكريم معلم','شهادة نجاح نهاية العام'];
+const pre={'شهادة تفوق':['تتقدم إدارة المدرسة بخالص التهنئة إلى الطالب المتفوق','وذلك لتفوقه الدراسي وحصوله على المراتب الأولى، متمنين له دوام النجاح.','#a87c32'],'شهادة حفظ القرآن الكريم':['تهنئ المدرسة بإتمام حفظ كتاب الله','وذلك لحفظه ما تيسر من القرآن الكريم، جعله الله من أهل القرآن الذين هم أهل الله وخاصته.','#2f5d50'],'طالب الشهر':['يسر المدرسة اختيار الطالب المتميز لهذا الشهر','وذلك لالتزامه وحسن خلقه ومشاركته الفاعلة، ونسأل الله له التوفيق.','#1f4e8c'],'نجم الأسبوع':['نجم هذا الأسبوع في مدرستنا هو','تقديراً لجهده المتميز وسلوكه المثالي خلال هذا الأسبوع.','#c27a1a'],'شهادة شكر':['تتقدم إدارة المدرسة بجزيل الشكر والعرفان إلى','لما بذله من جهد مشكور وعطاء متميز، جزاه الله خير الجزاء.','#7a3b69'],'شهادة انضباط':['تقدّر إدارة المدرسة التزام','بالحضور والانضباط والسلوك القويم، سائلين الله له الثبات.','#3d5a80'],'شهادة تكريم معلم':['تتقدم إدارة المدرسة بالشكر والتقدير إلى المعلم','لإخلاصه في أداء رسالته التربوية وأثره الطيب في طلابه.','#14213d'],'شهادة نجاح نهاية العام':['تهنئ إدارة المدرسة الطالب','بنجاحه وانتقاله إلى الصف التالي، ونسأل الله له مزيداً من التقدم.','#2f5d50'],'شهادة مشاركة':['تشكر إدارة المدرسة','على مشاركته الفاعلة وروحه الإيجابية في النشاط المدرسي.','#1f4e8c']};
+const tpls={classic:'كلاسيكي',modern:'عصري',geo:'هندسي',ribbon:'شريطي'};
+const blank=()=>({type:types[0],name:'',grade:'',date:today(),intro:'تتقدم إدارة المدرسة بخالص التهنئة والتقدير إلى',body:'وذلك تقديراً لتميزه واجتهاده، متمنين له دوام التوفيق والنجاح ومزيداً من العطاء.',color:'',manager:'',num:'',tpl:'classic'});
+let f=blank(),tab='studio',ed=null;
+
+/* ---------- الشهادة (SVG) ---------- */
+function wrap(t,n){const o=[];let l='';for(const w of String(t).split(/\s+/)){if((l+' '+w).trim().length>n&&l){o.push(l);l=w}else l=(l+' '+w).trim()}if(l)o.push(l);return o.slice(0,4)}
+function certSVG(d,s){
+ const c=d.color||s.color,W=1123,H=794,t=d.tpl,ink='#14213d',mu='#6b6a63',
+ font=(d.font==='kufi'?"'Reem Kufi',":'')+"Amiri,'Traditional Arabic','Noto Naskh Arabic',serif",X=t==='modern'?(W-90)/2:W/2;
+ let bg;
+ if(t==='modern')bg=`<rect width="${W}" height="${H}" fill="#fbfbf8"/><rect x="${W-70}" width="70" height="${H}" fill="${c}"/><rect x="${W-86}" width="6" height="${H}" fill="${c}" opacity=".4"/><rect x="40" y="40" width="${W-150}" height="${H-80}" fill="none" stroke="${c}" stroke-width="1" opacity=".5"/>`;
+ else if(t==='geo')bg=`<defs><pattern id="g" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M20 3L37 20L20 37L3 20Z" fill="none" stroke="${c}" stroke-width="1.2"/></pattern></defs><rect width="${W}" height="${H}" fill="#fffdf6"/><rect width="${W}" height="${H}" fill="url(#g)" opacity=".3"/><rect x="62" y="62" width="${W-124}" height="${H-124}" fill="#fffdf6" stroke="${c}" stroke-width="3"/><rect x="74" y="74" width="${W-148}" height="${H-148}" fill="none" stroke="${c}" stroke-width="1"/>`;
+ else if(t==='ribbon')bg=`<rect width="${W}" height="${H}" fill="#fffdf6"/><rect width="${W}" height="26" fill="${c}"/><rect y="${H-26}" width="${W}" height="26" fill="${c}"/><rect x="44" y="50" width="${W-88}" height="${H-100}" fill="none" stroke="${c}" stroke-width="1.5"/>`;
+ else bg=`<rect width="${W}" height="${H}" fill="#fffdf6"/><rect x="28" y="28" width="${W-56}" height="${H-56}" fill="none" stroke="${c}" stroke-width="6"/><rect x="46" y="46" width="${W-92}" height="${H-92}" fill="none" stroke="${c}" stroke-width="1.5"/>`+[[46,46],[W-46,46],[46,H-46],[W-46,H-46]].map(([x,y])=>`<rect x="${x-9}" y="${y-9}" width="18" height="18" fill="${c}" transform="rotate(45 ${x} ${y})"/>`).join('');
+ const T=(x,y,sz,fill,txt,w='400')=>`<text x="${x}" y="${y}" font-size="${sz}" font-weight="${w}" fill="${fill}" text-anchor="middle" direction="rtl" font-family="${font}">${esc(txt)}</text>`;
+ const lg=s.logo&&!d.hideLogo,y0=lg?176:130,nm=d.name||'اسم المكرَّم',ns=(+d.ns||60)*(nm.length>24?.75:1),bs=+d.bs||24;
+ const ty=y0+118,iy=ty+54,ny=iy+78;let cur=ny+22,mid=`<line x1="${X-230}" x2="${X+230}" y1="${cur}" y2="${cur}" stroke="${c}" stroke-width="1.5"/>`;
+ const hd=(lg?`<image href="${s.logo}" x="${X-36}" y="64" width="72" height="72" preserveAspectRatio="xMidYMid meet"/>`:'')+T(X,y0,30,c,s.name,'700')+T(X,y0+28,18,mu,s.org)+`<line x1="${X-150}" x2="${X-16}" y1="${y0+52}" y2="${y0+52}" stroke="${c}"/><line x1="${X+16}" x2="${X+150}" y1="${y0+52}" y2="${y0+52}" stroke="${c}"/><path d="M${X} ${y0+44}l8 8-8 8-8-8z" fill="${c}"/>`;
+ const tz=d.type.length>20?44:54,title=t==='ribbon'?`<rect x="${X-290}" y="${ty-50}" width="580" height="72" rx="4" fill="${c}"/>`+T(X,ty,tz,'#fff',d.type,'700'):T(X,ty,tz,ink,d.type,'700');
+ if(d.grade){cur+=36;mid+=T(X,cur,22,mu,d.grade)}
+ if(d.extra){cur+=30;mid+=T(X,cur,22,c,d.extra,'700')}
+ const L=wrap(d.body,Math.round(64*24/bs)).slice(0,d.extra&&d.grade?3:4),y1=cur+46,st=L.length>1?Math.min(bs+10,(628-y1)/(L.length-1)):0;
+ mid+=L.map((l,i)=>T(X,y1+i*st,bs,'#3a3a3a',l)).join('');
+ const fy=664,sg=(x,n,r)=>`<line x1="${x-100}" x2="${x+100}" y1="${fy}" y2="${fy}" stroke="#555"/>${T(x,fy+28,22,ink,n,'700')}${T(x,fy+50,16,mu,r)}`,
+ seal=(x,y,r)=>d.hideSeal?'':s.stamp?`<image href="${s.stamp}" x="${x-r*1.25}" y="${y-r*1.25}" width="${r*2.5}" height="${r*2.5}" preserveAspectRatio="xMidYMid meet"/>`:`<circle cx="${x}" cy="${y}" r="${r}" fill="none" stroke="#999" stroke-dasharray="5 5"/>`+T(x,y+5,15,'#999','الختم');
+ let ft=(s.sig?`<image href="${s.sig}" x="${X+220}" y="${fy-72}" width="160" height="68" preserveAspectRatio="xMidYMid meet"/>`:'')+sg(X+300,d.manager||s.manager||'مدير المدرسة',d.role||'إدارة المدرسة');
+ const two=!!d.m2;ft+=two?sg(X-300,d.m2,d.r2||'المعلم')+seal(X,fy-8,34):seal(X-300,fy-6,44);
+ const dy=two&&!d.hideSeal?fy+50:fy+28;
+ ft+=T(X,dy,20,'#3a3a3a',fd(d.date))+(!d.hideNum&&d.num?T(X,dy+22,14,mu,'رقم '+d.num):'');
+ return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">${bg}${hd}${title}${T(X,iy,24,'#3a3a3a',d.intro)}${T(X,ny,ns,c,nm,'700')}${mid}${ft}</svg>`}
+
+/* ---------- الطباعة والتصدير ---------- */
+function printMany(list){const s=sch();$('#pa').innerHTML=list.map(d=>`<div class="pg">${certSVG(d,s)}</div>`).join('');document.body.classList.add('pr');setTimeout(()=>{window.print();setTimeout(()=>document.body.classList.remove('pr'),400)},80)}
+function png(){const x=new XMLSerializer().serializeToString($('#pv svg')),im=new Image();im.onload=()=>{const c=document.createElement('canvas');c.width=2246;c.height=1588;c.getContext('2d').drawImage(im,0,0,2246,1588);c.toBlob(b=>{const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='شهادة-'+(f.name||'تكريم')+'.png';a.click();toast('تم تنزيل الصورة')})};im.onerror=()=>toast('تعذر تصدير الصورة. استخدم طباعة / PDF.');im.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(x)}
+const dl=(n,c,t)=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([c],{type:t}));a.download=n;a.click()};
+const fx=()=>({...f,color:f.color||sch().color});
+
+/* ---------- الصفحات ---------- */
+const V={},B={};
+V.studio=()=>{const s=sch(),st=db.students.filter(x=>x.school===s.id);return `<div class="grid two"><div class="panel"><h3>بيانات الشهادة</h3>
+<label>نوع التكريم</label><select data-k="type">${types.map(t=>`<option ${t===f.type?'selected':''}>${t}</option>`).join('')}</select>
+<div class="tpls">${Object.entries(tpls).map(([k,v])=>`<button data-t="${k}" class="${k===f.tpl?'on':''}">${v}</button>`).join('')}</div>
+<label>الخط</label><select data-k="font"><option value="amiri" ${f.font!=='kufi'?'selected':''}>أميري (تقليدي)</option><option value="kufi" ${f.font==='kufi'?'selected':''}>ريم كوفي (عصري)</option></select><label>طالب مسجّل (اختياري)</label><select id="pick"><option value="">إدخال الاسم يدوياً</option>${st.map(x=>`<option value="${x.id}">${esc(x.name)}</option>`).join('')}</select>
+<label>اسم المكرَّم</label><input data-k="name" value="${esc(f.name)}" placeholder="اكتب الاسم">
+<div class="row"><div><label>الصف</label><input data-k="grade" value="${esc(f.grade)}"></div><div><label>التاريخ</label><input type="date" data-k="date" value="${f.date}"></div></div>
+<label>عبارة المقدمة</label><input data-k="intro" value="${esc(f.intro)}">
+<label>نص التكريم</label><textarea data-k="body">${esc(f.body)}</textarea>
+<div class="row"><div><label>اللون</label><input type="color" data-k="color" value="${f.color||s.color}"></div><div><label>رقم الشهادة</label><input data-k="num" value="${esc(f.num)}" placeholder="تلقائي"></div></div>
+<label>اسم الموقّع</label><input data-k="manager" value="${esc(f.manager||s.manager)}">
+<details style="margin-top:14px"><summary style="cursor:pointer;font-weight:600">خيارات التخطيط</summary>
+<label>حجم الاسم</label><input type="range" min="36" max="84" data-k="ns" value="${f.ns||60}">
+<label>حجم نص التكريم</label><input type="range" min="18" max="30" data-k="bs" value="${f.bs||24}">
+<label>سطر إضافي تحت الاسم (مثل: بنسبة 98٪)</label><input data-k="extra" value="${esc(f.extra)}">
+<div class="row"><div><label>صفة الموقّع</label><input data-k="role" value="${esc(f.role||'إدارة المدرسة')}"></div><div><label>موقّع ثانٍ</label><input data-k="m2" value="${esc(f.m2)}"></div></div>
+<label>صفة الموقّع الثاني</label><input data-k="r2" value="${esc(f.r2||'المعلم')}">
+${[['hideLogo','إخفاء الشعار'],['hideSeal','إخفاء الختم'],['hideNum','إخفاء رقم الشهادة']].map(([k,v])=>`<label><input type="checkbox" data-b="${k}" ${f[k]?'checked':''} style="width:auto;margin-inline-end:8px">${v}</label>`).join('')}</details>
+<div class="acts"><button class="pri" id="sv">حفظ في الأرشيف</button><button id="pg">طباعة / PDF</button><button id="pn">تنزيل PNG</button><button id="sh">مشاركة</button></div></div>
+<div class="stick"><div id="pv"></div></div></div>`};
+B.studio=()=>{const draw=()=>$('#pv').innerHTML=certSVG({...fx(),name:f.name},sch());
+ $$('[data-k]').forEach(e=>e.oninput=()=>{f[e.dataset.k]=e.value;draw()});
+ $$('[data-t]').forEach(b=>b.onclick=()=>{f.tpl=b.dataset.t;$$('[data-t]').forEach(x=>x.classList.toggle('on',x===b));draw()});
+ $('#pick').onchange=e=>{const x=db.students.find(y=>y.id===e.target.value);if(x){f.name=x.name;f.grade=x.grade;$('[data-k=name]').value=x.name;$('[data-k=grade]').value=x.grade;draw()}};
+ $('#sv').onclick=()=>{if(!f.name.trim())return toast('أدخل اسم المكرَّم أولاً');const n=f.num||String(db.certs.filter(c=>c.school===sch().id).length+1).padStart(4,'0');f.num=n;db.certs.push({...fx(),id:uid(),school:sch().id,created:Date.now()});save();$('[data-k=num]').value=n;draw();toast('تم حفظ الشهادة في الأرشيف')};
+ $('#pg').onclick=()=>f.name.trim()?printMany([fx()]):toast('أدخل اسم المكرَّم أولاً');$$('[data-b]').forEach(e=>e.onchange=()=>{f[e.dataset.b]=e.target.checked;draw()});$('#pn').onclick=png;$('#sh').onclick=shr;
+ $('[data-k=type]').addEventListener('input',e=>{const p=pre[e.target.value];if(p){[f.intro,f.body,f.color]=p;['intro','body','color'].forEach(k=>$('[data-k='+k+']').value=f[k]);draw()}});draw()};
+
+V.students=()=>{const st=db.students.filter(x=>x.school===sch().id);return `<div class="grid two"><div class="panel"><h3>إضافة طالب</h3>
+<label>الاسم</label><input id="sn"><label>الصف</label><input id="sg"><div class="acts"><button class="pri" id="sa">إضافة</button></div>
+<h3 style="margin-top:22px">استيراد من ملف CSV</h3><p style="color:var(--mut);font-size:13px;margin:4px 0">العمود الأول الاسم والثاني الصف. من Excel اختر «حفظ باسم» ثم CSV.</p><input type="file" id="sf" accept=".csv,.txt"></div>
+<div class="panel"><div style="display:flex;align-items:center;gap:10px"><h3 style="flex:1">الطلاب (${st.length})</h3>${st.length?'<button id="sp">طباعة شهادة لكل طالب</button>':''}</div>
+${st.length?`<ul class="list">${st.map(x=>`<li><span>${esc(x.name)}<small>${esc(x.grade)}</small></span><button data-h="${x.id}">تكريم</button><button class="dng" data-d="${x.id}" aria-label="حذف">✕</button></li>`).join('')}</ul>`:'<div class="empty">لا يوجد طلاب بعد. أضف طالباً أو استورد ملفاً.</div>'}</div></div>`};
+function csv(t){t=t.replace(/^\uFEFF/,'');const d=[',',';','\t'].sort((a,b)=>t.split(b).length-t.split(a).length)[0],R=[];let r=[],c='',q=false;for(let i=0;i<t.length;i++){const h=t[i];if(q){if(h=='"'){if(t[i+1]=='"'){c+='"';i++}else q=false}else c+=h}else if(h=='"')q=true;else if(h==d){r.push(c);c=''}else if(h=='\n'||h=='\r'){if(h=='\r'&&t[i+1]=='\n')i++;r.push(c);c='';R.push(r);r=[]}else c+=h}r.push(c);R.push(r);return R.filter(x=>x.some(y=>y.trim()))}
+B.students=()=>{const add=(n,g)=>{n=String(n||'').trim();if(n)db.students.push({id:uid(),school:sch().id,name:n,grade:String(g||'').trim()});return !!n};
+ $('#sa').onclick=()=>{if(!add($('#sn').value,$('#sg').value))return toast('أدخل اسم الطالب');save();render();toast('تمت إضافة الطالب')};
+ $('#sf').onchange=async e=>{const fl=e.target.files[0];if(!fl)return;let rows=csv(await fl.text());if(rows.length&&/الاسم|name/i.test(rows[0][0]))rows.shift();let n=0;rows.forEach(r=>{if(add(r[0],r[1]))n++});save();render();toast(n?`تم استيراد ${n} طالباً`:'لم يُعثر على أسماء في الملف')};
+ $$('[data-d]').forEach(b=>b.onclick=()=>{if(confirm('حذف هذا الطالب؟')){db.students=db.students.filter(x=>x.id!==b.dataset.d);save();render()}});
+ $$('[data-h]').forEach(b=>b.onclick=()=>{const x=db.students.find(y=>y.id===b.dataset.h);f.name=x.name;f.grade=x.grade;f.num='';go('studio')});
+ $('#sp')&&($('#sp').onclick=()=>printMany(db.students.filter(x=>x.school===sch().id).map(x=>({...fx(),name:x.name,grade:x.grade||f.grade,num:''}))))};
+
+V.archive=()=>`<div class="panel"><h3>أرشيف التكريم</h3><label>بحث</label><input id="q" placeholder="اسم الطالب أو نوع الشهادة"><div id="al"></div></div>`;
+B.archive=()=>{const draw=()=>{const q=$('#q').value.trim(),l=db.certs.filter(c=>c.school===sch().id&&(c.name+c.type).includes(q)).reverse();$('#al').innerHTML=l.length?`<ul class="list">${l.map(c=>`<li><span>${esc(c.name)}<small>${esc(c.type)} · ${fd(c.date)} · رقم ${esc(c.num)}</small></span><button data-o="${c.id}">فتح</button><button class="dng" data-x="${c.id}" aria-label="حذف">✕</button></li>`).join('')}</ul>`:'<div class="empty">لا توجد شهادات محفوظة.</div>';
+ $$('[data-o]').forEach(b=>b.onclick=()=>{const c=db.certs.find(x=>x.id===b.dataset.o);f={...blank(),...c};go('studio')});
+ $$('[data-x]').forEach(b=>b.onclick=()=>{if(confirm('حذف هذه الشهادة من الأرشيف؟')){db.certs=db.certs.filter(x=>x.id!==b.dataset.x);save();draw()}})};
+ $('#q').oninput=draw;draw()};
+
+V.schools=()=>{const s=sch();return `<div class="grid two"><div class="panel"><h3>بيانات المدرسة</h3>
+<label>الاسم</label><input data-s="name" value="${esc(s.name)}"><label>الجهة التعليمية</label><input data-s="org" value="${esc(s.org)}"><label>المدير</label><input data-s="manager" value="${esc(s.manager)}">
+<div class="row"><div><label>لون الهوية</label><input type="color" data-s="color" value="${s.color}"></div><div><label>الشعار</label><input type="file" id="lg" accept="image/*"></div></div>
+<div class="row"><div><label>صورة التوقيع</label><input type="file" id="sig" accept="image/*"></div><div><label>صورة الختم</label><input type="file" id="stp" accept="image/*"></div></div><div class="acts"><button class="pri" id="ns">إضافة مدرسة</button>${db.schools.length>1?'<button class="dng" id="ds">حذف هذه المدرسة</button>':''}${s.logo?'<button id="rl">إزالة الشعار</button>':''}</div></div>
+<div class="panel"><h3>النسخ الاحتياطي</h3><p style="color:var(--mut);margin-top:0">البيانات تُحفظ في هذا المتصفح فقط. نزّل نسخة قبل تغيير الجهاز أو مسح بيانات المتصفح.</p>
+<div class="acts"><button class="pri" id="eb">تنزيل نسخة</button><button id="ib">استعادة نسخة</button></div><input type="file" id="bf" accept=".json" hidden></div></div>`};
+B.schools=()=>{const s=sch();
+ $$('[data-s]').forEach(e=>e.oninput=()=>{s[e.dataset.s]=e.value;save();if(e.dataset.s==='name')ssel()});
+ $('#lg').onchange=e=>{const fl=e.target.files[0];if(!fl)return;const im=new Image();im.onload=()=>{const k=Math.min(1,240/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=im.width*k;c.height=im.height*k;c.getContext('2d').drawImage(im,0,0,c.width,c.height);s.logo=c.toDataURL('image/png');save();render()};im.src=URL.createObjectURL(fl)};
+ $('#rl')&&($('#rl').onclick=()=>{s.logo='';save();render()});
+ $('#sig').onchange=e=>e.target.files[0]&&pic(e.target.files[0],d=>{s.sig=d;save();toast('تم حفظ التوقيع')},320);
+ $('#stp').onchange=e=>e.target.files[0]&&pic(e.target.files[0],d=>{s.stamp=d;save();toast('تم حفظ الختم')},240);
+ $('#ns').onclick=()=>{const n={id:uid(),name:'مدرسة جديدة',org:'',manager:'',color:'#a87c32',logo:''};db.schools.push(n);db.active=n.id;save();ssel();render()};
+ $('#ds')&&($('#ds').onclick=()=>{if(confirm('سيُحذف كل ما يخص هذه المدرسة من طلاب وشهادات. متابعة؟')){db.schools=db.schools.filter(x=>x.id!==s.id);db.students=db.students.filter(x=>x.school!==s.id);db.certs=db.certs.filter(x=>x.school!==s.id);db.active=db.schools[0].id;save();ssel();render()}});
+ $('#eb').onclick=()=>dl('midad-'+today()+'.json',JSON.stringify(db),'application/json');
+ $('#ib').onclick=()=>$('#bf').click();
+ $('#bf').onchange=async e=>{try{const d=JSON.parse(await e.target.files[0].text());if(!Array.isArray(d.schools)||!d.schools.length||!Array.isArray(d.students)||!Array.isArray(d.certs))throw 0;if(!confirm('ستُستبدل البيانات الحالية. متابعة؟'))return;db=d;save();ssel();render();toast('تمت استعادة النسخة')}catch(x){toast('ملف النسخة الاحتياطية غير صالح')}}};
+
+function pic(fl,cb,m=240){const im=new Image();im.onload=()=>{const k=Math.min(1,m/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=im.width*k;c.height=im.height*k;c.getContext('2d').drawImage(im,0,0,c.width,c.height);cb(c.toDataURL('image/png'))};im.src=URL.createObjectURL(fl)}
+function shr(){const x=new XMLSerializer().serializeToString($('#pv svg')),im=new Image();im.onload=()=>{const c=document.createElement('canvas');c.width=1600;c.height=1131;c.getContext('2d').drawImage(im,0,0,1600,1131);c.toBlob(async b=>{const fl=new File([b],'certificate.png',{type:'image/png'});try{if(navigator.canShare&&navigator.canShare({files:[fl]}))await navigator.share({files:[fl],title:f.name});else png()}catch(e){}})};im.onerror=()=>toast('تعذرت المشاركة');im.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(x)}
+V.stats=()=>{const id=sch().id,c=db.certs.filter(x=>x.school===id),st=db.students.filter(x=>x.school===id),m=today().slice(0,7),got=new Set(c.map(x=>x.name)),by={};c.forEach(x=>by[x.type]=(by[x.type]||0)+1);const mx=Math.max(1,...Object.values(by)),miss=st.filter(x=>!got.has(x.name));
+ return `<div class="grid two"><div class="panel"><h3>الملخص</h3><ul class="list"><li><span>الشهادات الصادرة</span><b>${c.length}</b></li><li><span>هذا الشهر</span><b>${c.filter(x=>(x.date||'').startsWith(m)).length}</b></li><li><span>طلاب مكرَّمون</span><b>${got.size}</b></li><li><span>لم يُكرَّموا بعد</span><b>${miss.length}</b></li></ul></div><div class="panel"><h3>حسب النوع</h3>${Object.keys(by).length?Object.entries(by).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<div style="margin:10px 0"><div style="display:flex;justify-content:space-between"><span>${esc(k)}</span><b>${v}</b></div><div style="height:8px;background:var(--ln);border-radius:4px"><div style="height:8px;width:${v/mx*100}%;background:var(--br);border-radius:4px"></div></div></div>`).join(''):'<div class="empty">لا توجد بيانات بعد.</div>'}${miss.length?`<h3 style="margin-top:20px">لم يُكرَّموا بعد</h3><p style="color:var(--mut)">${miss.slice(0,12).map(x=>esc(x.name)).join('، ')}${miss.length>12?' ...':''}</p>`:''}</div></div>`};B.stats=()=>{};
+/* ---------- التنقل ---------- */
+const names={studio:'الاستوديو',students:'الطلاب',archive:'الأرشيف',stats:'الإحصاءات',schools:'المدرسة والنسخ'};
+function ssel(){$('#ss').innerHTML=db.schools.map(s=>`<option value="${s.id}" ${s.id===sch().id?'selected':''}>${esc(s.name)}</option>`).join('')}
+function render(){$('#tabs').innerHTML=Object.entries(names).map(([k,v])=>`<button data-p="${k}" class="${k===tab?'on':''}">${v}</button>`).join('');$$('[data-p]').forEach(b=>b.onclick=()=>go(b.dataset.p));$('#v').innerHTML=V[tab]();B[tab]()}
+function go(p){tab=p;render();window.scrollTo(0,0)}
+function theme(m){document.documentElement.dataset.theme=m}
+if(!db.schools.length){db.schools.push({id:uid(),name:'مدرستي',org:'',manager:'',color:'#a87c32',logo:''});db.active=db.schools[0].id;save()}
+theme(db.theme||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light'));
+$('#th').onclick=()=>{db.theme=document.documentElement.dataset.theme==='dark'?'light':'dark';theme(db.theme);save()};
+$('#ss').onchange=e=>{db.active=e.target.value;save();render()};
+ssel();render();
+</script>
+</body>
+</html>
