@@ -1,38 +1,32 @@
 <!doctype html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#101d35">
-<title>مِداد | منصة الإبداع والتكريم المدرسي</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>مِداد | استوديو الشهادات المدرسية</title>
+<meta name="description" content="منصة عربية لتصميم شهادات التكريم المدرسي وإدارة الطلاب والأرشيف والطباعة، تعمل بالكامل داخل متصفحك.">
+<meta name="theme-color" content="#0a1220">
+<meta property="og:title" content="مِداد | استوديو الشهادات المدرسية">
+<meta property="og:description" content="صمّم واطبع وشارك شهادات التكريم المدرسي بالعربية.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%230f1b2d'/%3E%3Ctext x='32' y='44' font-size='34' text-anchor='middle' fill='%23e0b563'%3E%E2%9C%A6%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Reem+Kufi:wght@400;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="style.css">
-<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 </head>
 <body>
-<div class="app-shell">
-  <aside class="sidebar" id="sidebar">
-    <div class="brand"><div class="brand-mark">م</div><div><strong>مِداد</strong><small>MIDAD · الاستوديو المدرسي</small></div></div>
-    <div class="school-switch"><label>المدرسة الحالية</label><select id="schoolSelect"></select><button class="tiny-btn" id="addSchoolQuick">＋ مدرسة</button></div>
-    <nav class="nav">
-      <button class="nav-item active" data-page="dashboard"><span>▦</span> لوحة التحكم</button>
-      <button class="nav-item" data-page="schools"><span>🏫</span> إدارة المدارس</button>
-      <button class="nav-item" data-page="students"><span>👩‍🎓</span> الطلاب</button>
-      <button class="nav-item" data-page="studio"><span>✦</span> استوديو التصميم</button>
-      <button class="nav-item" data-page="archive"><span>▤</span> أرشيف التكريم</button>
-      <button class="nav-item" data-page="backup"><span>⤓</span> النسخ الاحتياطي</button>
-    </nav>
-    <div class="sidebar-bottom"><div class="offline-dot"></div><span>يعمل محلياً على هذا الجهاز</span><button id="themeToggle" title="تبديل المظهر">◐</button></div>
-  </aside>
-  <main class="main">
-    <header class="topbar"><button class="menu-btn" id="menuBtn">☰</button><div><span class="eyebrow">مساحة الإنجاز والتقدير</span><h1 id="pageTitle">لوحة التحكم</h1></div><div class="top-actions"><span class="today" id="today"></span><button class="primary-btn" data-goto="studio">＋ تصميم جديد</button></div></header>
-    <div id="pageContent" class="content"></div>
-    <footer>مِداد © <span id="year"></span> · لأن كل إنجاز يستحق أن يُخلَّد</footer>
-  </main>
+<a class="skip" href="#v">تخطَّ إلى المحتوى</a>
+<div class="app">
+<header>
+  <div class="bar"><button id="bk" hidden aria-label="رجوع"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button><div class="brand">مِداد</div><select id="ss" aria-label="المدرسة الحالية"></select><button id="th" aria-label="تبديل المظهر">◐</button></div>
+</header>
+<main id="v" tabindex="-1"></main>
+<nav class="tabs" id="tabs" aria-label="التنقل الرئيسي"></nav>
 </div>
-<div class="toast" id="toast"></div>
-<dialog id="schoolDialog" class="modal">
-<form method="dialog" id="schoolForm"><div class="modal-head"><h2 id="schoolDialogTitle">إضافة مدرسة</h2><button class="icon-btn" value="cancel">✕</button></div>
-<input type="hidden" id="schoolId"><label>اسم المدرسة *</label><input id="schoolName" required placeholder="مثال: مدرسة بلال بن رباح">
-<div class="form-grid"><div><label>الجهة التعليمية</label><input id="schoolOrg" placeholder="إدارة التعليم..."></div><div><label>المرحلة</label><input id="schoolStage" placeholder="ابتدائية / إعدادية..."></div><div><label>اسم المدير</label><input id="schoolManager"></div><div><label>لون الهوية</label><input id="schoolColor" type="color" value="#b58b48"></div></div>
-<label>شعار المدرسة (اختياري)</label><input id="schoolLogo" type="file" accept="image/*"><div class="modal-actions"><button class="ghost-btn" value="cancel">إلغاء</button><button class="primary-btn" id="saveSchool">حفظ المدرسة</button></div></form></dialog>
+<div id="pa"></div>
+<div class="toast" id="t" role="status" aria-live="polite"></div>
+<noscript>يحتاج هذا التطبيق إلى تفعيل JavaScript.</noscript>
 <script src="app.js"></script>
-</body></html>
+</body>
+</html>
