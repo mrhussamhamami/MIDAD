@@ -7,6 +7,7 @@ const rowT=x=>({school_id:x.school,name:x.name,grade:x.grade||''});
 const rowC=c=>({school_id:c.school,num:c.num||'',name:c.name,type:c.type||'',issued_on:c.date||today(),data:c});
 const gOv=h=>{let g=$('#gate');if(!g){g=document.createElement('div');g.id='gate';document.body.append(g)}g.innerHTML='<div class="box">'+h+'</div>'};
 const gCl=()=>{const g=$('#gate');g&&g.remove()};
+const gErr=m=>({'Email not confirmed':'لم يتم تأكيد البريد بعد. افتح رسالة التأكيد في بريدك، أو اطلب إعادة إرسالها.','Invalid login credentials':'البريد أو كلمة المرور غير صحيحة.','User already registered':'هذا البريد مسجّل مسبقاً. استخدم تسجيل الدخول.'}[m]||m);
 const gMsg=m=>{const e=$('#am');e&&(e.textContent=m)};
 async function gAll(t){let o=[],f=0;for(;;){const{data,error}=await sb.from(t).select('*').order('created_at').range(f,f+999);if(error)throw error;o=o.concat(data);if(data.length<1000)return o;f+=1000}}
 async function gLoad(){
@@ -33,13 +34,14 @@ function gPush(){gQ=gQ.then(async()=>{try{
 const gGate=()=>{const p=sch().status==='pending';return `<div class="panel"><h3>${p?'مدرستك قيد المراجعة':'هذه المدرسة موقوفة'}</h3><p style="color:var(--mut)">${p?'سنفعّل حسابك بعد مراجعة إدارة المنصة. يمكنك في الأثناء تعديل بيانات المدرسة.':'تواصل مع إدارة المنصة لإعادة التفعيل. بياناتك محفوظة.'}</p></div>`};
 
 function gAuth(){
- gOv(`<div class="brand" style="font-size:46px;text-align:center;margin:0 0 14px">مِداد</div><div class="panel"><h3 id="at">تسجيل الدخول</h3><label>البريد الإلكتروني</label><input id="ae" type="email" autocomplete="email" dir="ltr"><label>كلمة المرور</label><input id="ap" type="password" autocomplete="current-password" dir="ltr"><div class="acts"><button class="pri" id="ab">دخول</button><button id="as">إنشاء حساب جديد</button></div><p id="am" role="status" style="color:var(--mut)"></p></div>`);
+ gOv(`<div class="brand" style="font-size:46px;text-align:center;margin:0 0 14px">مِداد</div><div class="panel"><h3 id="at">تسجيل الدخول</h3><label>البريد الإلكتروني</label><input id="ae" type="email" autocomplete="email" dir="ltr"><label>كلمة المرور</label><input id="ap" type="password" autocomplete="current-password" dir="ltr"><div class="acts"><button class="pri" id="ab">دخول</button><button id="as">إنشاء حساب جديد</button><button id="rs" hidden>إعادة إرسال رسالة التأكيد</button></div><p id="am" role="status" style="color:var(--mut)"></p></div>`);
  let reg=false;
+ $('#rs').onclick=async()=>{const{error}=await sb.auth.resend({type:'signup',email:$('#ae').value.trim(),options:{emailRedirectTo:location.origin+location.pathname}});gMsg(error?gErr(error.message):'تم إرسال رسالة التأكيد. تحقق من بريدك (وصندوق الرسائل غير المرغوبة).')};
  $('#as').onclick=()=>{reg=!reg;$('#at').textContent=reg?'إنشاء حساب':'تسجيل الدخول';$('#ab').textContent=reg?'تسجيل':'دخول';$('#as').textContent=reg?'لدي حساب':'إنشاء حساب جديد'};
  $('#ab').onclick=async()=>{const e=$('#ae').value.trim(),p=$('#ap').value;if(!e||p.length<8)return gMsg('أدخل بريداً صحيحاً وكلمة مرور من 8 أحرف على الأقل');
   gMsg('جارٍ المعالجة…');
   const r=reg?await sb.auth.signUp({email:e,password:p,options:{emailRedirectTo:location.origin+location.pathname}}):await sb.auth.signInWithPassword({email:e,password:p});
-  if(r.error)return gMsg(r.error.message);
+  if(r.error){$('#rs').hidden=r.error.message!=='Email not confirmed';return gMsg(gErr(r.error.message))}
   if(r.data.session)gStart(r.data.session.user);else gMsg('تم إنشاء الحساب. تحقق من بريدك لتأكيده ثم سجّل الدخول.')}}
 
 async function gOnb(){

@@ -36,7 +36,7 @@ function certSVG(d,s){
  mid+=L.map((l,i)=>T(X,y1+i*st,bs,'#3a3a3a',l)).join('');
  const fy=664,sg=(x,n,r)=>`<line x1="${x-100}" x2="${x+100}" y1="${fy}" y2="${fy}" stroke="#555"/>${T(x,fy+28,22,ink,n,'700')}${T(x,fy+50,16,mu,r)}`,
  seal=(x,y,r)=>d.hideSeal?'':s.stamp?`<image href="${s.stamp}" x="${x-r*1.25}" y="${y-r*1.25}" width="${r*2.5}" height="${r*2.5}" preserveAspectRatio="xMidYMid meet"/>`:`<circle cx="${x}" cy="${y}" r="${r}" fill="none" stroke="#999" stroke-dasharray="5 5"/>`+T(x,y+5,15,'#999','الختم');
- let ft=(s.sig?`<image href="${s.sig}" x="${X+220}" y="${fy-72}" width="160" height="68" preserveAspectRatio="xMidYMid meet"/>`:'')+sg(X+300,d.manager||s.manager||'مدير المدرسة',d.role||'إدارة المدرسة');
+ let ft=(s.sig?`<image href="${s.sig}" x="${X+200}" y="${fy-86}" width="200" height="82" preserveAspectRatio="xMidYMid meet"/>`:'')+sg(X+300,d.manager||s.manager||'مدير المدرسة',d.role||'إدارة المدرسة');
  const two=!!d.m2;ft+=two?sg(X-300,d.m2,d.r2||'المعلم')+seal(X,fy-8,34):seal(X-300,fy-6,44);
  const dy=two&&!d.hideSeal?fy+50:fy+28;
  ft+=T(X,dy,20,'#3a3a3a',fd(d.date))+(!d.hideNum&&d.num?T(X,dy+22,14,mu,'رقم '+d.num):'');
@@ -106,15 +106,19 @@ B.schools=()=>{const s=sch();
  $$('[data-s]').forEach(e=>e.oninput=()=>{s[e.dataset.s]=e.value;save();if(e.dataset.s==='name')ssel()});
  $('#lg').onchange=e=>{const fl=e.target.files[0];if(!fl)return;const im=new Image();im.onload=()=>{const k=Math.min(1,240/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=im.width*k;c.height=im.height*k;c.getContext('2d').drawImage(im,0,0,c.width,c.height);s.logo=c.toDataURL('image/png');save();render()};im.src=URL.createObjectURL(fl)};
  $('#rl')&&($('#rl').onclick=()=>{s.logo='';save();render()});
- $('#sig').onchange=e=>e.target.files[0]&&pic(e.target.files[0],d=>{s.sig=d;save();toast('تم حفظ التوقيع')},320);
- $('#stp').onchange=e=>e.target.files[0]&&pic(e.target.files[0],d=>{s.stamp=d;save();toast('تم حفظ الختم')},240);
+ $('#sig').onchange=e=>e.target.files[0]&&pic(e.target.files[0],d=>{s.sig=d;save();toast('تم حفظ التوقيع')},420,true);
+ $('#stp').onchange=e=>e.target.files[0]&&pic(e.target.files[0],d=>{s.stamp=d;save();toast('تم حفظ الختم')},320,true);
  $('#ns').onclick=()=>{const n={id:uid(),name:'مدرسة جديدة',org:'',manager:'',color:'#a87c32',logo:''};db.schools.push(n);db.active=n.id;save();ssel();render()};
  $('#ds')&&($('#ds').onclick=()=>{if(confirm('سيُحذف كل ما يخص هذه المدرسة من طلاب وشهادات. متابعة؟')){db.schools=db.schools.filter(x=>x.id!==s.id);db.students=db.students.filter(x=>x.school!==s.id);db.certs=db.certs.filter(x=>x.school!==s.id);db.active=db.schools[0].id;save();ssel();render()}});
  $('#eb').onclick=()=>dl('midad-'+today()+'.json',JSON.stringify(db),'application/json');
  $('#ib').onclick=()=>$('#bf').click();
  $('#bf').onchange=async e=>{try{const d=JSON.parse(await e.target.files[0].text());if(!Array.isArray(d.schools)||!d.schools.length||!Array.isArray(d.students)||!Array.isArray(d.certs))throw 0;if(!confirm('ستُستبدل البيانات الحالية. متابعة؟'))return;db=d;save();ssel();render();toast('تمت استعادة النسخة')}catch(x){toast('ملف النسخة الاحتياطية غير صالح')}}};
 
-function pic(fl,cb,m=240){const im=new Image();im.onload=()=>{const k=Math.min(1,m/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=im.width*k;c.height=im.height*k;c.getContext('2d').drawImage(im,0,0,c.width,c.height);cb(c.toDataURL('image/png'))};im.src=URL.createObjectURL(fl)}
+function pic(fl,cb,m=240,trim=false){const im=new Image();im.onload=()=>{let c=document.createElement('canvas');c.width=im.width;c.height=im.height;const x=c.getContext('2d',{willReadFrequently:true});x.drawImage(im,0,0);
+ if(trim){const d=x.getImageData(0,0,c.width,c.height),p=d.data;let x0=c.width,y0=c.height,x1=0,y1=0;
+  for(let i=0;i<p.length;i+=4){if(p[i+3]<20||(p[i]>235&&p[i+1]>235&&p[i+2]>235))p[i+3]=0;else{const n=i/4,px=n%c.width,py=(n/c.width)|0;if(px<x0)x0=px;if(px>x1)x1=px;if(py<y0)y0=py;if(py>y1)y1=py}}
+  if(x1>x0&&y1>y0){x.putImageData(d,0,0);const w=x1-x0+1,h=y1-y0+1,t=document.createElement('canvas');t.width=w;t.height=h;t.getContext('2d').drawImage(c,x0,y0,w,h,0,0,w,h);c=t}}
+ const k=Math.min(1,m/Math.max(c.width,c.height)),o=document.createElement('canvas');o.width=Math.max(1,Math.round(c.width*k));o.height=Math.max(1,Math.round(c.height*k));o.getContext('2d').drawImage(c,0,0,o.width,o.height);cb(o.toDataURL('image/png'))};im.src=URL.createObjectURL(fl)}
 function shr(){const x=new XMLSerializer().serializeToString($('#pv svg')),im=new Image();im.onload=()=>{const c=document.createElement('canvas');c.width=1600;c.height=1131;c.getContext('2d').drawImage(im,0,0,1600,1131);c.toBlob(async b=>{const fl=new File([b],'certificate.png',{type:'image/png'});try{if(navigator.canShare&&navigator.canShare({files:[fl]}))await navigator.share({files:[fl],title:f.name});else png()}catch(e){}})};im.onerror=()=>toast('تعذرت المشاركة');im.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(x)}
 V.stats=()=>{const id=sch().id,c=db.certs.filter(x=>x.school===id),st=db.students.filter(x=>x.school===id),m=today().slice(0,7),got=new Set(c.map(x=>x.name)),by={};c.forEach(x=>by[x.type]=(by[x.type]||0)+1);const mx=Math.max(1,...Object.values(by)),miss=st.filter(x=>!got.has(x.name));
  return `<div class="grid two"><div class="panel"><h3>الملخص</h3><ul class="list"><li><span>الشهادات الصادرة</span><b>${c.length}</b></li><li><span>هذا الشهر</span><b>${c.filter(x=>(x.date||'').startsWith(m)).length}</b></li><li><span>طلاب مكرَّمون</span><b>${got.size}</b></li><li><span>لم يُكرَّموا بعد</span><b>${miss.length}</b></li></ul></div><div class="panel"><h3>حسب النوع</h3>${Object.keys(by).length?Object.entries(by).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<div style="margin:10px 0"><div style="display:flex;justify-content:space-between"><span>${esc(k)}</span><b>${v}</b></div><div style="height:8px;background:var(--ln);border-radius:4px"><div style="height:8px;width:${v/mx*100}%;background:var(--br);border-radius:4px"></div></div></div>`).join(''):'<div class="empty">لا توجد بيانات بعد.</div>'}${miss.length?`<h3 style="margin-top:20px">لم يُكرَّموا بعد</h3><p style="color:var(--mut)">${miss.slice(0,12).map(x=>esc(x.name)).join('، ')}${miss.length>12?' ...':''}</p>`:''}</div></div>`};B.stats=()=>{};

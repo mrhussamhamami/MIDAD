@@ -39,7 +39,7 @@ label{display:block;margin:12px 0 4px;color:var(--mut);font-size:13px}
 .toast{position:fixed;inset-inline:16px;bottom:calc(20px + env(safe-area-inset-bottom,0px));margin:auto;max-width:360px;background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:8px;text-align:center;opacity:0;pointer-events:none;transition:opacity .2s;z-index:20}
 .toast.show{opacity:1}
 #pa{display:none}
-@media print{@page{size:A4 landscape;margin:0}:root{padding:0}body::before{display:none}body.pr .app{display:none}body.pr #pa{display:block}.pg{height:100vh;page-break-after:always}.pg svg{width:100%;height:100%}}
+@media print{@page{size:A4 landscape;margin:0}html,body{margin:0;padding:0;background:#fff}:root{padding:0}body::before{display:none}body.pr .app,body.pr .toast,body.pr #gate{display:none!important}body.pr #pa{display:block}.pg{width:297mm;height:210mm;overflow:hidden;break-inside:avoid;break-after:page;page-break-after:always}.pg:last-child{break-after:auto;page-break-after:auto}.pg svg{display:block;width:297mm;height:210mm}}
 @media(prefers-reduced-motion:reduce){.toast{transition:none}}
 
 /* ===== الجيل الجديد: الهوية والحركة ===== */
