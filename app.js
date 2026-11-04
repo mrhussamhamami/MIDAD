@@ -2,9 +2,9 @@ const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const K='midad_v2';
 let db=null;try{db=JSON.parse(localStorage.getItem(K))}catch(e){}
 db=db||{schools:[],students:[],certs:[],active:null,theme:null};
-const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const uid=()=>crypto.randomUUID();
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const save=()=>{try{localStorage.setItem(K,JSON.stringify(db))}catch(e){toast('تعذر الحفظ: مساحة المتصفح ممتلئة. نزّل نسخة احتياطية.')}};
+let save=()=>{try{localStorage.setItem(K,JSON.stringify(db))}catch(e){toast('تعذر الحفظ: مساحة المتصفح ممتلئة. نزّل نسخة احتياطية.')}};
 let tt;const toast=m=>{const e=$('#t');e.textContent=m;e.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>e.classList.remove('show'),2600)};
 const sch=()=>db.schools.find(s=>s.id===db.active)||db.schools[0];
 const today=()=>new Date().toISOString().slice(0,10);
@@ -128,15 +128,15 @@ function render(){
  $$('[data-p]').forEach(b=>b.onclick=()=>go(b.dataset.p));
  const id=sch().id;
  $('#v').innerHTML=`<section class="hero"><h1>${names[tab]}</h1><p>${desc[tab]}</p><span class="chip">${db.certs.filter(x=>x.school===id).length} شهادة</span><span class="chip">${db.students.filter(x=>x.school===id).length} طالب</span></section>`+V[tab]();
- $('#bk').hidden=tab==='studio';B[tab]()}
+ $('#bk').hidden=tab===(names.studio?'studio':Object.keys(names)[0]);B[tab]()}
 function enter(){const v=$('#v');v.classList.remove('in');void v.offsetWidth;v.classList.add('in');window.scrollTo(0,0)}
 function go(p){if(location.hash.slice(1)===p){tab=p;render();enter()}else location.hash=p}
-addEventListener('hashchange',()=>{const p=location.hash.slice(1);if(names[p]){tab=p;render();enter()}});
+addEventListener('hashchange',()=>{const p=location.hash.slice(1);tab=names[p]?p:(names.studio?'studio':Object.keys(names)[0]);render();enter()});
 function theme(m){document.documentElement.dataset.theme=m}
-if(!db.schools.length){db.schools.push({id:uid(),name:'مدرستي',org:'',manager:'',color:'#a87c32',logo:''});db.active=db.schools[0].id;save()}
+if(!window.CLOUD&&!db.schools.length){db.schools.push({id:uid(),name:'مدرستي',org:'',manager:'',color:'#a87c32',logo:''});db.active=db.schools[0].id;save()}
 theme(db.theme||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light'));
 $('#th').onclick=()=>{db.theme=document.documentElement.dataset.theme==='dark'?'light':'dark';theme(db.theme);save()};
 $('#ss').onchange=e=>{db.active=e.target.value;save();render()};
-$('#bk').onclick=()=>history.length>1?history.back():go('studio');
+$('#bk').onclick=()=>history.length>1?history.back():go(names.studio?'studio':Object.keys(names)[0]);
 if(names[location.hash.slice(1)])tab=location.hash.slice(1);
-ssel();render();enter();
+window.boot?boot():(ssel(),render(),enter());
